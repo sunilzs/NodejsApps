@@ -3,6 +3,11 @@ var request = require('request');
 module.exports = function (location, callback) {
     var city = encodeURIComponent(location);
     var url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=f4abcc2b4afcdb75f5c61370101edb75";
+    
+    if(!location){
+        return callback('No location provided');
+    }
+
     request( {url:url, json:true},
         function (error, response, body){
             if(error){
