@@ -28,15 +28,11 @@ app.get('/todos', function (req, res) {
         where.completed = false;
     }
 
-    console.log(where.completed);
-
     if (query.hasOwnProperty('q') && query.q.length > 0) {
         where.description = {
             $like: '%' + query.q + '%'
         };
     }
-
-    console.log(where.description);
 
     db.todo.findAll({ where: where }).then(function (todos) {
         res.json(todos);
@@ -75,13 +71,20 @@ app.post('/todos', function (req, res) {
 //DELETE /todos/:id
 app.delete('/todos/:id', function (req, res) {
     var todoId = parseInt(req.params.id);
-    var matchedTodo = _.findWhere(todos, { 'id': todoId });
 
-    if (!matchedTodo) {
-        return res.status(404).json({ "error": "no todo found with that id" });
-    }
-    todos = _.without(todos, matchedTodo);
-    res.json(matchedTodo);
+    db.todo.destroy({
+        where: {
+            id: todoId
+        }
+    }).then(function (rowsDeleted) {
+        if (rowsDeleted === 0) {
+            res.status(404).json({ "error": "no todo found with that id" });
+        } else {
+            res.status(204).send();
+        }
+    }, function (e) {
+        res.status(500).send();
+    });
 })
 
 //PUT /todos/:id
