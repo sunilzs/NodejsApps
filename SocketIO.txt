@@ -1,0 +1,3 @@
+Sockets:
+
+io.on('connection) - listens for a connection from the client
