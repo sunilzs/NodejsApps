@@ -12,7 +12,12 @@ io.on('connection', function (socket) {
 
     socket.on('message', function(message){
         console.log('message received is :'+ message.text)
-        socket.broadcast.emit('message', message)
+        // Emit to all browsers apart from sender
+        // socket.broadcast.emit('message', message)
+
+        // Emit to all browsers including senders
+        io.emit('message', message)
+
     }) 
 
     socket.emit('message', {
